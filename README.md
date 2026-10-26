@@ -163,11 +163,15 @@ Add screenshots of your application's main pages to a `screenshots/` folder in t
 
 ### Home Page
 
-![JobConnect Home Page](screenshots/homepage.png)
+![JobConnect Home Page](screenshots/home.png)
 
 ### Login Page
 
 ![JobConnect Login Page](screenshots/login.png)
+
+### Register Page
+
+![JobConnect Register Page](screenshots/register.png)
 
 ### Job Listings
 
@@ -175,13 +179,13 @@ Add screenshots of your application's main pages to a `screenshots/` folder in t
 
 ### Job Seeker Dashboard
 
-![JobConnect Job Seeker Dashboard](screenshots/job-seeker-dashboard.png)
+![JobConnect Job Seeker Dashboard](screenshots/jobseekers.png)
 
 ### Employer Dashboard
 
-![JobConnect Employer Dashboard](screenshots/employer-dashboard.png)
+![JobConnect Employer Dashboard](screenshots/employer.png)
 
-*Replace these example image paths with the actual filenames of your screenshots.*
+
 
 ## Future Enhancements
 
