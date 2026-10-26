@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ job[1] }} | JobConnect</title>
+
+    <meta name="description"
+          content="View job details, required skills, salary, and application information on JobConnect.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+
+                {% if session.get('user_id') %}
+
+                    {% if session.get('role') == 'job_seeker' %}
+                        <a href="{{ url_for('job_seeker_dashboard') }}"
+                           class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('my_applications') }}"
+                           class="nav-link">My Applications</a>
+                    {% elif session.get('role') == 'employer' %}
+                        <a href="{{ url_for('employer_dashboard') }}"
+                           class="nav-link">Dashboard</a>
+                    {% endif %}
+
+                    <a href="{{ url_for('logout') }}"
+                       class="btn btn-outline btn-small">Logout</a>
+
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('register') }}"
+                       class="btn btn-primary btn-small">Get Started</a>
+                {% endif %}
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="page-content">
+
+        <!-- Breadcrumb -->
+        <div class="container job-breadcrumb">
+            <a href="{{ url_for('jobs') }}">← Back to Jobs</a>
+            <span>/</span>
+            <span>Job Details</span>
+        </div>
+
+        <section class="container job-details-layout">
+
+            <!-- Main Job Information -->
+            <article class="job-details-card">
+
+                <div class="job-details-heading">
+
+                    <div class="company-avatar company-avatar-large">
+                        {{ (job[2] or 'C')[0]|upper }}
+                    </div>
+
+                    <div class="job-details-title">
+                        <span class="badge">Job Opportunity</span>
+
+                        <h1>{{ job[1] }}</h1>
+
+                        <p class="job-company">
+                            {{ job[2] or 'Company not specified' }}
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="job-information-grid">
+
+                    <div class="job-information-item">
+                        <span class="information-label">Location</span>
+                        <strong>{{ job[3] or 'Not specified' }}</strong>
+                    </div>
+
+                    <div class="job-information-item">
+                        <span class="information-label">Salary</span>
+                        <strong class="salary-highlight">
+                            {% if job[6] is not none %}
+                                ₹{{ "{:,.0f}".format(job[6]|float) }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Required Skills -->
+                <section class="job-details-section">
+                    <h2>Required Skills</h2>
+
+                    {% if job[5] %}
+                        <div class="job-skills">
+                            {% for skill in job[5].split(',') %}
+                                <span class="skill-tag">
+                                    {{ skill.strip() }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="muted">No specific skills listed.</p>
+                    {% endif %}
+                </section>
+
+                <div class="divider"></div>
+
+                <!-- Job Description -->
+                <section class="job-details-section">
+                    <h2>About This Role</h2>
+
+                    <div class="job-description">
+                        {{ job[4] or 'No job description provided.' }}
+                    </div>
+                </section>
+
+                <div class="job-details-bottom">
+                    <a href="{{ url_for('jobs') }}"
+                       class="btn btn-outline">
+                        ← Back to Jobs
+                    </a>
+                </div>
+
+            </article>
+
+            <!-- Application Sidebar -->
+            <aside class="application-sidebar">
+
+                <div class="application-card">
+
+                    <span class="sidebar-eyebrow">YOUR NEXT STEP</span>
+
+                    <h2>Interested in this role?</h2>
+
+                    <p>
+                        Review the job requirements and submit your
+                        application when you're ready.
+                    </p>
+
+                    {% if session.get('user_id')
+                          and session.get('role') == 'job_seeker' %}
+
+                        <form method="POST"
+                              action="{{ url_for('apply_job', job_id=job[0]) }}">
+
+                            <button type="submit"
+                                    class="btn btn-primary btn-block">
+                                Apply for Job →
+                            </button>
+
+                        </form>
+
+                        <p class="application-note">
+                            Your application will be submitted
+                            to the employer for review.
+                        </p>
+
+                    {% elif not session.get('user_id') %}
+
+                        <a href="{{ url_for('login') }}"
+                           class="btn btn-primary btn-block">
+                            Login to Apply →
+                        </a>
+
+                        <p class="application-note">
+                            Please log in with your job seeker account
+                            to apply for this position.
+                        </p>
+
+                    {% elif session.get('role') == 'employer' %}
+
+                        <p class="application-note">
+                            Employer accounts cannot apply for jobs.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="application-tip">
+                    <h3>Application Tip</h3>
+                    <p>
+                        Keep your profile and resume up to date
+                        before applying for suitable opportunities.
+                    </p>
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

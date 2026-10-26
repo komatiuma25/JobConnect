@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+                <a href="{{ url_for('job_seeker_dashboard') }}"
+                   class="nav-link">Dashboard</a>
+                <a href="{{ url_for('my_applications') }}"
+                   class="nav-link">My Applications</a>
+                <a href="{{ url_for('logout') }}"
+                   class="btn btn-outline btn-small">Logout</a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="page-content">
+        <div class="container">
+
+            <!-- Page Heading -->
+            <section class="dashboard-header">
+                <div>
+                    <span class="skill-tag">YOUR ACCOUNT</span>
+                    <h1>My Profile</h1>
+                    <p>
+                        Manage your personal information, professional skills,
+                        and resume.
+                    </p>
+                </div>
+
+                <a href="{{ url_for('job_seeker_dashboard') }}"
+                   class="btn btn-outline">
+                    ← Dashboard
+                </a>
+            </section>
+
+            <!-- Flash Messages -->
+            <div class="flash-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <section class="profile-layout">
+
+                <!-- Profile Summary -->
+                <aside class="profile-summary-card">
+
+                    <div class="profile-avatar">
+                        {{ (user[1] or 'U')[0]|upper }}
+                    </div>
+
+                    <h2>{{ user[1] or 'User' }}</h2>
+                    <p class="profile-email">{{ user[2] or '' }}</p>
+
+                    <span class="role-badge">
+                        {{ (user[3] or 'Job Seeker')|replace('_', ' ')|title }}
+                    </span>
+
+                    <div class="profile-summary-divider"></div>
+
+                    <div class="profile-summary-item">
+                        <span class="summary-icon">📄</span>
+                        <div>
+                            <strong>Resume</strong>
+                            <p>
+                                {% if user[4] %}
+                                    Uploaded
+                                {% else %}
+                                    Not uploaded
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="profile-summary-item">
+                        <span class="summary-icon">💻</span>
+                        <div>
+                            <strong>Professional Skills</strong>
+                            <p>
+                                {% if user[5] %}
+                                    Skills added
+                                {% else %}
+                                    Add your skills
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                </aside>
+
+                <!-- Editable Profile -->
+                <div class="profile-main">
+
+                    <section class="profile-panel">
+                        <div class="profile-panel-heading">
+                            <h2>Personal Information</h2>
+                            <p>Keep your account details up to date.</p>
+                        </div>
+
+                        <form action="{{ url_for('update_profile') }}"
+                              method="POST">
+
+                            <div class="form-group">
+                                <label for="full_name">Full Name</label>
+                                <input
+                                    type="text"
+                                    id="full_name"
+                                    name="full_name"
+                                    value="{{ user[1] or '' }}"
+                                    maxlength="100"
+                                    autocomplete="name"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value="{{ user[2] or '' }}"
+                                    maxlength="255"
+                                    autocomplete="email"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="role">Account Role</label>
+                                <input
+                                    type="text"
+                                    id="role"
+                                    value="{{ (user[3] or '')|replace('_', ' ')|title }}"
+                                    readonly>
+                                <small class="form-help">
+                                    Your account role cannot be changed here.
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="skills">Professional Skills</label>
+                                <textarea
+                                    id="skills"
+                                    name="skills"
+                                    rows="4"
+                                    maxlength="1000"
+                                    placeholder="Python, SQL, Flask, Java, HTML, CSS">{{ user[5] or '' }}</textarea>
+
+                                <small class="form-help">
+                                    Separate skills with commas. Your skills
+                                    help JobConnect recommend relevant jobs.
+                                </small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Save Changes →
+                            </button>
+
+                        </form>
+                    </section>
+
+                    <!-- Resume Panel -->
+                    <section class="profile-panel resume-panel">
+
+                        <div class="profile-panel-heading">
+                            <h2>My Resume</h2>
+                            <p>
+                                Keep your resume up to date for employers.
+                            </p>
+                        </div>
+
+                        <div class="resume-information">
+
+                            <div class="resume-file-icon">PDF</div>
+
+                            <div class="resume-file-details">
+                                {% if user[4] %}
+                                    <strong>{{ user[4] }}</strong>
+                                    <p class="resume-status">
+                                        Your resume has been uploaded.
+                                    </p>
+                                {% else %}
+                                    <strong>No resume uploaded</strong>
+                                    <p class="resume-status">
+                                        Upload a PDF resume to get started.
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        <a href="{{ url_for('upload_resume') }}"
+                           class="btn btn-outline">
+                            {% if user[4] %}
+                                Update Resume →
+                            {% else %}
+                                Upload Resume →
+                            {% endif %}
+                        </a>
+
+                    </section>
+
+                    <!-- Account Settings -->
+                    <section class="profile-panel">
+
+                        <div class="profile-panel-heading">
+                            <h2>Account Settings</h2>
+                            <p>Manage your account and application activity.</p>
+                        </div>
+
+                        <div class="account-links">
+
+                            <a href="{{ url_for('change_password') }}"
+                               class="account-link">
+                                <span class="account-link-icon">🔒</span>
+                                <span class="account-link-text">
+                                    <strong>Change Password</strong>
+                                    <small>Update your account password.</small>
+                                </span>
+                                <span class="account-link-arrow">→</span>
+                            </a>
+
+                            <a href="{{ url_for('my_applications') }}"
+                               class="account-link">
+                                <span class="account-link-icon">📋</span>
+                                <span class="account-link-text">
+                                    <strong>My Applications</strong>
+                                    <small>Review your application status.</small>
+                                </span>
+                                <span class="account-link-arrow">→</span>
+                            </a>
+
+                            <a href="{{ url_for('notifications') }}"
+                               class="account-link">
+                                <span class="account-link-icon">🔔</span>
+                                <span class="account-link-text">
+                                    <strong>Notifications</strong>
+                                    <small>Check updates about your applications.</small>
+                                </span>
+                                <span class="account-link-arrow">→</span>
+                            </a>
+
+                            <a href="{{ url_for('recommended_jobs') }}"
+                               class="account-link">
+                                <span class="account-link-icon">⭐</span>
+                                <span class="account-link-text">
+                                    <strong>Recommended Jobs</strong>
+                                    <small>Explore jobs that match your skills.</small>
+                                </span>
+                                <span class="account-link-arrow">→</span>
+                            </a>
+
+                        </div>
+
+                    </section>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

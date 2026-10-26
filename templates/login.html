@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .login-page {
+            min-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            background: #f5f8ff;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 36px;
+            box-sizing: border-box;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(30, 64, 175, 0.08);
+        }
+
+        .login-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border-radius: 18px;
+            background: #eaf2ff;
+            color: #2563eb;
+            font-size: 28px;
+        }
+
+        .login-card h1 {
+            margin: 0 0 10px;
+            color: #172554;
+            text-align: center;
+            font-size: 29px;
+        }
+
+        .login-subtitle {
+            margin: 0 0 26px;
+            color: #64748b;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .login-message {
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .login-message.success {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .login-message.error,
+        .login-message.danger {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .login-message.warning {
+            color: #854d0e;
+            background: #fef3c7;
+        }
+
+        .login-message.info {
+            color: #1e40af;
+            background: #dbeafe;
+        }
+
+        .login-field {
+            margin-bottom: 20px;
+        }
+
+        .login-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .login-field input {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 14px;
+            box-sizing: border-box;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            color: #1e293b;
+            background: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .login-field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-input-wrapper input {
+            padding-right: 76px;
+        }
+
+        .show-password-button {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            padding: 6px 4px;
+            border: none;
+            background: transparent;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .show-password-button:hover {
+            color: #1d4ed8;
+        }
+
+        .show-password-button:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .login-submit {
+            display: block;
+            width: 100%;
+            min-height: 47px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .login-submit:hover {
+            background: #1d4ed8;
+        }
+
+        .login-submit:active {
+            transform: scale(0.99);
+        }
+
+        .login-footer {
+            margin: 25px 0 0;
+            color: #64748b;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .login-footer a {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-page {
+                padding: 25px 14px;
+            }
+
+            .login-card {
+                padding: 26px 20px;
+            }
+
+            .login-card h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-small">
+                    Sign Up
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="login-page">
+        <section class="login-card">
+
+            <div class="login-icon" aria-hidden="true">&#128274;</div>
+
+            <h1>Welcome Back!</h1>
+
+            <p class="login-subtitle">
+                Log in to continue to your JobConnect account.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="login-message {{ category }}" role="status">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+
+                <div class="login-field">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        autocomplete="email"
+                        placeholder="Enter your email address"
+                        required
+                    >
+                </div>
+
+                <div class="login-field">
+                    <label for="password">Password</label>
+
+                    <div class="password-input-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="current-password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="show-password-button"
+                            id="togglePassword"
+                            aria-controls="password"
+                            aria-pressed="false"
+                        >
+                            Show
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-submit">
+                    Login
+                </button>
+
+            </form>
+
+            <p class="login-footer">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Register here</a>
+            </p>
+
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </div>
+            <p class="footer-copy">Connecting talent with opportunity.</p>
+        </div>
+    </footer>
+
+    <script>
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+
+        togglePassword.addEventListener("click", function () {
+            const isHidden = passwordInput.type === "password";
+
+            passwordInput.type = isHidden ? "text" : "password";
+            togglePassword.textContent = isHidden ? "Hide" : "Show";
+            togglePassword.setAttribute("aria-pressed", String(isHidden));
+        });
+    </script>
+
+</body>
+</html>

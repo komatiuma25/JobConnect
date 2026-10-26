@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Dashboard | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+                <a href="{{ url_for('job_seeker_dashboard') }}"
+                   class="nav-link">Dashboard</a>
+                <a href="{{ url_for('my_applications') }}"
+                   class="nav-link">My Applications</a>
+                <a href="{{ url_for('profile') }}"
+                   class="nav-link">My Profile</a>
+                <a href="{{ url_for('logout') }}"
+                   class="btn btn-outline btn-small">Logout</a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="page-content">
+
+        <div class="container">
+
+            <!-- Welcome Section -->
+            <section class="dashboard-header">
+                <div>
+                    <span class="skill-tag">JOB SEEKER PORTAL</span>
+
+                    <h1>
+                        Welcome back,
+                        {{ session.get('full_name', 'Job Seeker') }}!
+                    </h1>
+
+                    <p>
+                        Track your applications and discover your next
+                        career opportunity.
+                    </p>
+                </div>
+
+                <div class="dashboard-actions">
+                    <a href="{{ url_for('jobs') }}"
+                       class="btn btn-primary">
+                        Browse Jobs →
+                    </a>
+                </div>
+            </section>
+
+            <!-- Statistics -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <h2 class="section-title">Application Overview</h2>
+                    <p class="section-description">
+                        Here's the current status of your applications.
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+                        <h3>Total Applications</h3>
+                        <p class="stat-value">{{ stats[0] or 0 }}</p>
+                        <p>Applications submitted</p>
+                    </article>
+
+                    <article class="stat-card">
+                        <h3>Pending Applications</h3>
+                        <p class="stat-value">{{ stats[1] or 0 }}</p>
+                        <p>Awaiting a decision</p>
+                    </article>
+
+                    <article class="stat-card">
+                        <h3>Shortlisted</h3>
+                        <p class="stat-value">{{ stats[2] or 0 }}</p>
+                        <p>Applications shortlisted</p>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Dashboard Links -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <h2 class="section-title">Manage Your Career</h2>
+                    <p class="section-description">
+                        Quick access to your JobConnect tools.
+                    </p>
+                </div>
+
+                <div class="dashboard-tools">
+
+                    <a href="{{ url_for('jobs') }}" class="tool-card">
+                        <span class="tool-icon">🔎</span>
+                        <span class="tool-title">Browse Jobs</span>
+                        <span class="tool-description">
+                            Discover available opportunities.
+                        </span>
+                        <span class="tool-arrow">Explore →</span>
+                    </a>
+
+                    <a href="{{ url_for('my_applications') }}"
+                       class="tool-card">
+                        <span class="tool-icon">📋</span>
+                        <span class="tool-title">My Applications</span>
+                        <span class="tool-description">
+                            Review your submitted applications.
+                        </span>
+                        <span class="tool-arrow">View applications →</span>
+                    </a>
+
+                    <a href="{{ url_for('recommended_jobs') }}"
+                       class="tool-card">
+                        <span class="tool-icon">⭐</span>
+                        <span class="tool-title">Recommended Jobs</span>
+                        <span class="tool-description">
+                            Find roles matching your skills.
+                        </span>
+                        <span class="tool-arrow">View recommendations →</span>
+                    </a>
+
+                    <a href="{{ url_for('upload_resume') }}"
+                       class="tool-card">
+                        <span class="tool-icon">📄</span>
+                        <span class="tool-title">Upload Resume</span>
+                        <span class="tool-description">
+                            Keep your resume available to employers.
+                        </span>
+                        <span class="tool-arrow">Manage resume →</span>
+                    </a>
+
+                    <a href="{{ url_for('profile') }}" class="tool-card">
+                        <span class="tool-icon">👤</span>
+                        <span class="tool-title">My Profile</span>
+                        <span class="tool-description">
+                            Update your personal details and skills.
+                        </span>
+                        <span class="tool-arrow">Edit profile →</span>
+                    </a>
+
+                    <a href="{{ url_for('change_password') }}"
+                       class="tool-card">
+                        <span class="tool-icon">🔒</span>
+                        <span class="tool-title">Change Password</span>
+                        <span class="tool-description">
+                            Manage your account password.
+                        </span>
+                        <span class="tool-arrow">Update password →</span>
+                    </a>
+
+                    <a href="{{ url_for('notifications') }}"
+                       class="tool-card">
+                        <span class="tool-icon">🔔</span>
+                        <span class="tool-title">Notifications</span>
+                        <span class="tool-description">
+                            Check updates about your applications.
+                        </span>
+                        <span class="tool-arrow">View notifications →</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

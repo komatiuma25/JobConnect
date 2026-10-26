@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employer Dashboard | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+
+                <a href="{{ url_for('employer_dashboard') }}"
+                   class="nav-link">Dashboard</a>
+
+                <a href="{{ url_for('employer_applications') }}"
+                   class="nav-link">Applications</a>
+
+                <a href="{{ url_for('jobs') }}" class="nav-link">Browse Jobs</a>
+
+                <span class="nav-user">
+                    {{ session.get('full_name', 'Employer') }}
+                </span>
+
+                <a href="{{ url_for('logout') }}"
+                   class="btn btn-outline btn-small">Logout</a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="page-content">
+
+        <div class="container">
+
+            <!-- Welcome Section -->
+            <section class="dashboard-header">
+                <div>
+                    <span class="skill-tag">EMPLOYER PORTAL</span>
+
+                    <h1>Employer Dashboard</h1>
+
+                    <p>
+                        Welcome back,
+                        {{ session.get('full_name', 'Employer') }}!
+                        Manage your job listings and track applicants.
+                    </p>
+                </div>
+
+                <a href="#post-job" class="btn btn-primary">
+                    + Post a Job
+                </a>
+            </section>
+
+            <!-- Flash Messages -->
+            <div class="flash-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Analytics -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <h2 class="section-title">Hiring Overview</h2>
+                    <p class="section-description">
+                        A quick look at your recruitment activity.
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+                        <h3>Total Jobs Posted</h3>
+                        <p class="stat-value">{{ total_jobs }}</p>
+                        <p>Jobs published by you</p>
+                    </article>
+
+                    <article class="stat-card">
+                        <h3>Total Applications</h3>
+                        <p class="stat-value">{{ total_applications }}</p>
+                        <p>Applications received</p>
+                    </article>
+
+                    <article class="stat-card">
+                        <h3>Pending Applications</h3>
+                        <p class="stat-value">{{ pending_applications }}</p>
+                        <p>Awaiting review</p>
+                    </article>
+
+                    <article class="stat-card">
+                        <h3>Shortlisted Candidates</h3>
+                        <p class="stat-value">{{ shortlisted_candidates }}</p>
+                        <p>Selected for further consideration</p>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Post a Job -->
+            <section class="dashboard-section" id="post-job">
+
+                <div class="section-header">
+                    <h2 class="section-title">Post a New Job</h2>
+                    <p class="section-description">
+                        Enter the position details to publish a job listing.
+                    </p>
+                </div>
+
+                <div class="section-card">
+                    <form action="{{ url_for('employer_dashboard') }}"
+                          method="POST">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="title">Job Title *</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    placeholder="e.g. Python Developer"
+                                    maxlength="200"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company_name">Company Name *</label>
+                                <input
+                                    type="text"
+                                    id="company_name"
+                                    name="company_name"
+                                    placeholder="Enter company name"
+                                    maxlength="200"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <input
+                                    type="text"
+                                    id="location"
+                                    name="location"
+                                    placeholder="e.g. Hyderabad"
+                                    maxlength="200">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="salary">Annual Salary (₹)</label>
+                                <input
+                                    type="number"
+                                    id="salary"
+                                    name="salary"
+                                    placeholder="e.g. 300000"
+                                    min="0"
+                                    step="0.01">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="required_skills">Required Skills</label>
+                                <input
+                                    type="text"
+                                    id="required_skills"
+                                    name="required_skills"
+                                    placeholder="Python, SQL, Flask"
+                                    maxlength="1000">
+
+                                <small class="form-help">
+                                    Separate skills with commas.
+                                </small>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="description">Job Description *</label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    placeholder="Describe the role, responsibilities, and qualifications..."
+                                    required></textarea>
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Publish Job →
+                        </button>
+
+                    </form>
+                </div>
+            </section>
+
+            <!-- Posted Jobs -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <h2 class="section-title">My Posted Jobs</h2>
+                    <p class="section-description">
+                        Manage your published job opportunities.
+                    </p>
+                </div>
+
+                {% if jobs %}
+
+                    <div class="employer-jobs-grid">
+
+                        {% for job in jobs %}
+
+                            <article class="employer-job-card">
+
+                                <div class="employer-job-heading">
+                                    <div class="company-avatar">
+                                        {{ (job[2] or 'C')[0]|upper }}
+                                    </div>
+
+                                    <span class="badge">Published</span>
+                                </div>
+
+                                <h3>{{ job[1] }}</h3>
+
+                                <p class="job-company">
+                                    {{ job[2] or 'Company not specified' }}
+                                </p>
+
+                                <div class="employer-job-info">
+                                    <p>
+                                        <strong>Location:</strong>
+                                        {{ job[3] or 'Not specified' }}
+                                    </p>
+
+                                    <p>
+                                        <strong>Posted:</strong>
+                                        {% if job[4] %}
+                                            {{ job[4] }}
+                                        {% else %}
+                                            Not available
+                                        {% endif %}
+                                    </p>
+                                </div>
+
+                                <div class="job-card-footer">
+
+                                    <a href="{{ url_for('job_details', job_id=job[0]) }}"
+                                       class="btn btn-outline">
+                                        View Job
+                                    </a>
+
+                                    <a href="{{ url_for('employer_applications') }}"
+                                       class="btn btn-primary">
+                                        View Applications →
+                                    </a>
+
+                                </div>
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <div class="empty-icon">💼</div>
+
+                        <h2>No Jobs Posted Yet</h2>
+
+                        <p>
+                            Your job listings will appear here after
+                            you publish your first job.
+                        </p>
+
+                        <a href="#post-job" class="btn btn-primary mt-2">
+                            Post Your First Job
+                        </a>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

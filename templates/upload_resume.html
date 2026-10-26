@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume | JobConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+    <nav class="navbar container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <span class="brand-icon">J</span>
+            <span>Job<span class="brand-highlight">Connect</span></span>
+        </a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+            <a href="{{ url_for('job_seeker_dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small">Logout</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page-content">
+    <div class="container resume-upload-page">
+
+        <a href="{{ url_for('job_seeker_dashboard') }}" class="resume-back-link">
+            &larr; Back to Dashboard
+        </a>
+
+        <div class="resume-upload-layout">
+
+            <section class="resume-upload-card">
+                <div class="resume-upload-heading">
+                    <div class="resume-upload-icon" aria-hidden="true">
+                        <span>&#128196;</span>
+                    </div>
+                    <span class="resume-eyebrow">CAREER PROFILE</span>
+                    <h1>Upload Your Resume</h1>
+                    <p>
+                        Showcase your experience and skills to help employers
+                        understand your qualifications.
+                    </p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="resume-flash-messages">
+                            {% for category, message in messages %}
+                                <div class="alert {% if category == 'success' %}alert-success{% else %}alert-error{% endif %}" role="status">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('upload_resume') }}"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      class="resume-upload-form">
+
+                    <label for="resume" class="resume-file-label">
+                        Select your resume
+                    </label>
+
+                    <div class="resume-file-dropzone">
+                        <div class="resume-file-symbol" aria-hidden="true">
+                            &#8679;
+                        </div>
+                        <h2>Choose a PDF file</h2>
+                        <p>Upload your resume from your computer</p>
+
+                        <input
+                            type="file"
+                            id="resume"
+                            name="resume"
+                            accept=".pdf,application/pdf"
+                            required
+                            aria-describedby="resume-file-help"
+                        >
+
+                        <p class="resume-file-help" id="resume-file-help">
+                            PDF format only · Maximum size: 5 MB
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block resume-submit-button">
+                        Upload Resume
+                    </button>
+                </form>
+
+                <div class="resume-privacy-note">
+                    <span aria-hidden="true">&#128274;</span>
+                    <p>Make sure your resume contains accurate and up-to-date information.</p>
+                </div>
+            </section>
+
+            <aside class="resume-tips-card">
+                <span class="resume-tips-eyebrow">QUICK TIPS</span>
+                <h2>Make your resume stand out</h2>
+                <p class="resume-tips-intro">
+                    A clear, well-organized resume can help employers understand your strengths.
+                </p>
+
+                <div class="resume-tip">
+                    <span class="resume-tip-number">01</span>
+                    <div>
+                        <h3>Keep it updated</h3>
+                        <p>Include your latest education, projects, and experience.</p>
+                    </div>
+                </div>
+
+                <div class="resume-tip">
+                    <span class="resume-tip-number">02</span>
+                    <div>
+                        <h3>Highlight your skills</h3>
+                        <p>Include relevant technical skills and project work.</p>
+                    </div>
+                </div>
+
+                <div class="resume-tip">
+                    <span class="resume-tip-number">03</span>
+                    <div>
+                        <h3>Check before uploading</h3>
+                        <p>Confirm your PDF is readable and no larger than 5 MB.</p>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('profile') }}" class="resume-profile-link">
+                    Update your profile &rarr;
+                </a>
+            </aside>
+
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-content">
+        <div class="footer-brand">
+            <span class="brand-icon">J</span>
+            <span>Job<span class="brand-highlight">Connect</span></span>
+        </div>
+        <p class="footer-copy">Connecting talent with opportunity.</p>
+    </div>
+</footer>
+
+</body>
+</html>

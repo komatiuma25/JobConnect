@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | JobConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+    <nav class="navbar container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <span class="brand-icon">J</span>
+            <span>Job<span class="brand-highlight">Connect</span></span>
+        </a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+            <a href="{{ url_for('job_seeker_dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('my_applications') }}" class="nav-link">My Applications</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small">Logout</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page-content">
+    <div class="container notifications-page">
+
+        <a href="{{ url_for('job_seeker_dashboard') }}" class="notifications-back">
+            &larr; Back to Dashboard
+        </a>
+
+        <section class="notifications-heading">
+            <div>
+                <span class="notifications-eyebrow">YOUR ACTIVITY</span>
+                <h1>Notifications</h1>
+                <p>Stay up to date with your job application activity.</p>
+            </div>
+
+            <div class="notification-count-card">
+                <span class="notification-bell-icon" aria-hidden="true">&#128276;</span>
+                <div>
+                    <strong>{{ unread_count }}</strong>
+                    <span>Unread notifications</span>
+                </div>
+            </div>
+        </section>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="alert {% if category == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="notifications-panel">
+            <div class="notifications-panel-header">
+                <div>
+                    <h2>Your notifications</h2>
+                    <p>Updates and messages related to your account.</p>
+                </div>
+                {% if notifications %}
+                    <span class="notifications-total">
+                        {{ notifications|length }} total
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if notifications %}
+                <div class="notifications-list">
+                    {% for notification in notifications %}
+                        <article class="notification-item {% if notification[2] == 0 %}notification-unread{% else %}notification-read{% endif %}">
+
+                            <div class="notification-icon-wrap {% if notification[2] == 0 %}notification-icon-unread{% else %}notification-icon-read{% endif %}">
+                                {% if notification[2] == 0 %}
+                                    <span aria-hidden="true">&#128276;</span>
+                                {% else %}
+                                    <span aria-hidden="true">&#10003;</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="notification-content">
+                                <div class="notification-topline">
+                                    <span class="notification-status {% if notification[2] == 0 %}status-unread{% else %}status-read{% endif %}">
+                                        {% if notification[2] == 0 %}Unread{% else %}Read{% endif %}
+                                    </span>
+                                </div>
+
+                                <p class="notification-message">
+                                    {{ notification[1] }}
+                                </p>
+
+                                <p class="notification-date">
+                                    <span aria-hidden="true">&#128336;</span>
+                                    {{ notification[3].strftime('%d %b %Y, %I:%M %p') }}
+                                </p>
+                            </div>
+
+                            {% if notification[2] == 0 %}
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('mark_notification_read', notification_id=notification[0]) }}"
+                                    class="notification-action"
+                                >
+                                    <button type="submit" class="btn btn-primary btn-small">
+                                        Mark as Read
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="notifications-empty">
+                    <div class="empty-notification-icon" aria-hidden="true">&#128276;</div>
+                    <h2>You're all caught up!</h2>
+                    <p>You don't have any notifications yet. Job application updates will appear here.</p>
+                    <a href="{{ url_for('jobs') }}" class="btn btn-primary">
+                        Explore Jobs
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-content">
+        <div class="footer-brand">
+            <span class="brand-icon">J</span>
+            <span>Job<span class="brand-highlight">Connect</span></span>
+        </div>
+        <p class="footer-copy">Connecting talent with opportunity.</p>
+    </div>
+</footer>
+
+</body>
+</html>

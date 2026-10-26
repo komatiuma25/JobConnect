@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .register-page {
+            min-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            background: #f5f8ff;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 490px;
+            padding: 36px;
+            box-sizing: border-box;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(30, 64, 175, 0.08);
+        }
+
+        .register-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border-radius: 18px;
+            background: #eaf2ff;
+            color: #2563eb;
+            font-size: 28px;
+        }
+
+        .register-card h1 {
+            margin: 0 0 10px;
+            color: #172554;
+            text-align: center;
+            font-size: 29px;
+        }
+
+        .register-subtitle {
+            margin: 0 0 26px;
+            color: #64748b;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .register-message {
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .register-message.success {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .register-message.error,
+        .register-message.danger {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .register-message.warning {
+            color: #854d0e;
+            background: #fef3c7;
+        }
+
+        .register-message.info {
+            color: #1e40af;
+            background: #dbeafe;
+        }
+
+        .register-field {
+            margin-bottom: 20px;
+        }
+
+        .register-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .register-field input,
+        .register-field select {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 14px;
+            box-sizing: border-box;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            color: #1e293b;
+            background: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .register-field input:focus,
+        .register-field select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .register-password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .register-password-wrapper input {
+            padding-right: 76px;
+        }
+
+        .register-show-password {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            padding: 6px 4px;
+            border: none;
+            background: transparent;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .register-show-password:hover {
+            color: #1d4ed8;
+        }
+
+        .register-show-password:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .register-help {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .register-submit {
+            display: block;
+            width: 100%;
+            min-height: 47px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .register-submit:hover {
+            background: #1d4ed8;
+        }
+
+        .register-submit:active {
+            transform: scale(0.99);
+        }
+
+        .register-footer {
+            margin: 25px 0 0;
+            color: #64748b;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .register-footer a {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .register-page {
+                padding: 25px 14px;
+            }
+
+            .register-card {
+                padding: 26px 20px;
+            }
+
+            .register-card h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline btn-small">
+                    Login
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="register-page">
+        <section class="register-card">
+
+            <div class="register-icon" aria-hidden="true">&#128100;</div>
+
+            <h1>Create Your Account</h1>
+
+            <p class="register-subtitle">
+                Join JobConnect and discover new opportunities.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="register-message {{ category }}" role="status">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('register') }}">
+
+                <div class="register-field">
+                    <label for="full_name">Full Name</label>
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        maxlength="100"
+                        autocomplete="name"
+                        placeholder="Enter your full name"
+                        required
+                    >
+                </div>
+
+                <div class="register-field">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        maxlength="150"
+                        autocomplete="email"
+                        placeholder="Enter your email address"
+                        required
+                    >
+                </div>
+
+                <div class="register-field">
+                    <label for="password">Password</label>
+
+                    <div class="register-password-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            minlength="8"
+                            autocomplete="new-password"
+                            placeholder="Create a password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="register-show-password"
+                            id="toggleRegisterPassword"
+                            aria-controls="password"
+                            aria-pressed="false"
+                        >
+                            Show
+                        </button>
+                    </div>
+
+                    <p class="register-help">Use at least 8 characters.</p>
+                </div>
+
+                <div class="register-field">
+                    <label for="role">I want to register as</label>
+
+                    <select id="role" name="role" required>
+                        <option value="">Select account type</option>
+                        <option value="job_seeker">Job Seeker</option>
+                        <option value="employer">Employer</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="register-submit">
+                    Create Account
+                </button>
+
+            </form>
+
+            <p class="register-footer">
+                Already have an account?
+                <a href="{{ url_for('login') }}">Login here</a>
+            </p>
+
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </div>
+            <p class="footer-copy">Connecting talent with opportunity.</p>
+        </div>
+    </footer>
+
+    <script>
+        const registerPassword = document.getElementById("password");
+        const toggleRegisterPassword = document.getElementById(
+            "toggleRegisterPassword"
+        );
+
+        toggleRegisterPassword.addEventListener("click", function () {
+            const isHidden = registerPassword.type === "password";
+
+            registerPassword.type = isHidden ? "text" : "password";
+            toggleRegisterPassword.textContent = isHidden ? "Hide" : "Show";
+            toggleRegisterPassword.setAttribute(
+                "aria-pressed",
+                String(isHidden)
+            );
+        });
+    </script>
+
+</body>
+</html>

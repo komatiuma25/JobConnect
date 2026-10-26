@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JobConnect | Find Your Dream Job</title>
+    <meta name="description"
+          content="Discover job opportunities, explore careers, and connect with employers using JobConnect.">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+
+                {% if session.get('user_id') %}
+
+                    {% if session.get('role') == 'job_seeker' %}
+                        <a href="{{ url_for('job_seeker_dashboard') }}"
+                           class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('my_applications') }}"
+                           class="nav-link">My Applications</a>
+                        <a href="{{ url_for('profile') }}"
+                           class="nav-link">My Profile</a>
+
+                    {% elif session.get('role') == 'employer' %}
+                        <a href="{{ url_for('employer_dashboard') }}"
+                           class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('employer_applications') }}"
+                           class="nav-link">Applications</a>
+                    {% endif %}
+
+                    <span class="nav-user">
+                        {{ session.get('full_name', 'User') }}
+                    </span>
+
+                    <a href="{{ url_for('logout') }}"
+                       class="btn btn-outline btn-small">Logout</a>
+
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('register') }}"
+                       class="btn btn-primary btn-small">Get Started</a>
+                {% endif %}
+            </div>
+
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container hero-content">
+
+                <span class="skill-tag">YOUR NEXT CAREER STARTS HERE</span>
+
+                <h1>
+                    Find Your Next
+                    <span>Career Opportunity</span>
+                </h1>
+
+                <p>
+                    Discover opportunities that match your skills.
+                    Connect with employers and take the next step
+                    towards your professional future.
+                </p>
+
+                <!-- Existing job search functionality preserved -->
+                <form class="search-form"
+                      action="{{ url_for('jobs') }}"
+                      method="GET">
+
+                    <div class="form-group">
+                        <label for="title">Job title</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="e.g. Python Developer">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input
+                            type="text"
+                            id="location"
+                            name="location"
+                            placeholder="e.g. Hyderabad">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Search Jobs →
+                    </button>
+
+                </form>
+
+                <p class="hero-note">
+                    Find opportunities. Showcase your skills. Build your future.
+                </p>
+
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="section">
+            <div class="container">
+
+                <div class="section-header text-center">
+                    <h2 class="section-title">
+                        Why Choose JobConnect?
+                    </h2>
+                    <p class="section-description">
+                        Everything you need to take the next step in your career.
+                    </p>
+                </div>
+
+                <div class="feature-container">
+
+                    <article class="feature-card card">
+                        <div class="feature-icon">🔎</div>
+                        <h3>Easy Job Search</h3>
+                        <p>
+                            Find relevant opportunities using job titles
+                            and locations that match your goals.
+                        </p>
+                    </article>
+
+                    <article class="feature-card card">
+                        <div class="feature-icon">💼</div>
+                        <h3>Career Opportunities</h3>
+                        <p>
+                            Explore job openings and discover opportunities
+                            from different employers.
+                        </p>
+                    </article>
+
+                    <article class="feature-card card">
+                        <div class="feature-icon">📄</div>
+                        <h3>Track Applications</h3>
+                        <p>
+                            Keep your applications organized and check
+                            their progress from your dashboard.
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="section">
+            <div class="container">
+                <div class="cta-section">
+                    <h2>Ready for your next opportunity?</h2>
+                    <p>
+                        Explore available jobs and take the next step
+                        in your career journey.
+                    </p>
+
+                    <a href="{{ url_for('jobs') }}"
+                       class="btn btn-primary">
+                        Explore Jobs →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

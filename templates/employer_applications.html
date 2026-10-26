@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Applications Received | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+
+                <a href="{{ url_for('employer_dashboard') }}"
+                   class="nav-link">Dashboard</a>
+
+                <a href="{{ url_for('employer_applications') }}"
+                   class="nav-link">Applications</a>
+
+                <a href="{{ url_for('jobs') }}"
+                   class="nav-link">Browse Jobs</a>
+
+                <a href="{{ url_for('logout') }}"
+                   class="btn btn-outline btn-small">Logout</a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="page-content">
+        <div class="container">
+
+            <!-- Page Heading -->
+            <section class="dashboard-header">
+                <div>
+                    <span class="skill-tag">EMPLOYER PORTAL</span>
+                    <h1>Applications Received</h1>
+                    <p>
+                        Review candidates, download resumes, and update
+                        application statuses.
+                    </p>
+                </div>
+
+                <a href="{{ url_for('employer_dashboard') }}"
+                   class="btn btn-outline">
+                    ← Dashboard
+                </a>
+            </section>
+
+            <!-- Flash Messages -->
+            <div class="flash-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Applications -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <h2 class="section-title">Candidate Applications</h2>
+                    <p class="section-description">
+                        Review the information submitted by applicants
+                        for your job openings.
+                    </p>
+                </div>
+
+                {% if applications %}
+
+                    <div class="employer-applications-list">
+
+                        {% for application in applications %}
+
+                            <article class="candidate-card">
+
+                                <!-- Candidate Header -->
+                                <div class="candidate-header">
+
+                                    <div class="candidate-avatar">
+                                        {{ (application[3] or 'A')[0]|upper }}
+                                    </div>
+
+                                    <div class="candidate-heading">
+                                        <h3>{{ application[3] }}</h3>
+                                        <p>{{ application[4] }}</p>
+                                    </div>
+
+                                    <span class="status
+                                        {% if application[5] == 'Pending' %}
+                                            status-pending
+                                        {% elif application[5] == 'Reviewed' %}
+                                            status-reviewed
+                                        {% elif application[5] == 'Shortlisted' %}
+                                            status-shortlisted
+                                        {% elif application[5] == 'Accepted' %}
+                                            status-accepted
+                                        {% elif application[5] == 'Rejected' %}
+                                            status-rejected
+                                        {% elif application[5] == 'Withdrawn' %}
+                                            status-withdrawn
+                                        {% endif %}">
+                                        {{ application[5] }}
+                                    </span>
+
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <!-- Job Information -->
+                                <div class="candidate-job-info">
+
+                                    <div>
+                                        <span class="information-label">
+                                            Applied for
+                                        </span>
+                                        <strong>{{ application[1] }}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="information-label">
+                                            Company
+                                        </span>
+                                        <strong>{{ application[2] }}</strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="information-label">
+                                            Application date
+                                        </span>
+                                        <strong>
+                                            {% if application[6] %}
+                                                {{ application[6].strftime('%d-%m-%Y %H:%M') }}
+                                            {% else %}
+                                                Not available
+                                            {% endif %}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                                <!-- Resume -->
+                                <div class="candidate-resume">
+                                    <div>
+                                        <h4>Candidate Resume</h4>
+
+                                        {% if application[7] %}
+                                            <p class="muted">
+                                                Resume available for review.
+                                            </p>
+                                        {% else %}
+                                            <p class="muted">
+                                                This candidate has not uploaded a resume.
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if application[7] %}
+                                        <a class="btn btn-outline"
+                                           href="{{ url_for(
+                                               'download_resume',
+                                               application_id=application[0]
+                                           ) }}">
+                                            Download Resume ↓
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Update Status -->
+                                {% if application[5] != 'Withdrawn' %}
+
+                                    <div class="candidate-status-section">
+                                        <h4>Manage Application</h4>
+
+                                        <form method="POST"
+                                              class="candidate-status-form"
+                                              action="{{ url_for(
+                                                  'update_application_status',
+                                                  application_id=application[0]
+                                              ) }}">
+
+                                            <div class="form-group">
+                                                <label for="status-{{ application[0] }}">
+                                                    Application Status
+                                                </label>
+
+                                                <select
+                                                    name="status"
+                                                    id="status-{{ application[0] }}"
+                                                    required>
+
+                                                    {% if application[5] == 'Pending' %}
+                                                        <option value="Pending" selected disabled>
+                                                            Pending (current)
+                                                        </option>
+                                                    {% endif %}
+
+                                                    {% if application[5] == 'Reviewed' %}
+                                                        <option value="Reviewed" selected>
+                                                            Reviewed (current)
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="Reviewed">
+                                                            Reviewed
+                                                        </option>
+                                                    {% endif %}
+
+                                                    {% if application[5] == 'Shortlisted' %}
+                                                        <option value="Shortlisted" selected>
+                                                            Shortlisted (current)
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="Shortlisted">
+                                                            Shortlisted
+                                                        </option>
+                                                    {% endif %}
+
+                                                    {% if application[5] == 'Rejected' %}
+                                                        <option value="Rejected" selected>
+                                                            Rejected (current)
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="Rejected">
+                                                            Rejected
+                                                        </option>
+                                                    {% endif %}
+
+                                                    {% if application[5] == 'Accepted' %}
+                                                        <option value="Accepted" selected>
+                                                            Accepted (current)
+                                                        </option>
+                                                    {% else %}
+                                                        <option value="Accepted">
+                                                            Accepted
+                                                        </option>
+                                                    {% endif %}
+
+                                                </select>
+                                            </div>
+
+                                            <button type="submit"
+                                                    class="btn btn-primary">
+                                                Update Status →
+                                            </button>
+
+                                        </form>
+                                    </div>
+
+                                {% else %}
+
+                                    <p class="withdrawn-notice">
+                                        This application was withdrawn by the candidate.
+                                    </p>
+
+                                {% endif %}
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+
+                        <h2>No Applications Yet</h2>
+
+                        <p>
+                            Applications will appear here when candidates
+                            apply for your job listings.
+                        </p>
+
+                        <a href="{{ url_for('employer_dashboard') }}"
+                           class="btn btn-primary mt-2">
+                            Return to Dashboard
+                        </a>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Applications | JobConnect</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header class="site-header">
+        <nav class="navbar container">
+
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-icon">J</span>
+                <span>Job<span class="brand-highlight">Connect</span></span>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+                <a href="{{ url_for('job_seeker_dashboard') }}"
+                   class="nav-link">Dashboard</a>
+                <a href="{{ url_for('my_applications') }}"
+                   class="nav-link">My Applications</a>
+                <a href="{{ url_for('profile') }}"
+                   class="nav-link">My Profile</a>
+
+                <a href="{{ url_for('logout') }}"
+                   class="btn btn-outline btn-small">Logout</a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="page-content">
+        <div class="container">
+
+            <!-- Page Heading -->
+            <section class="dashboard-header">
+                <div>
+                    <span class="skill-tag">JOB SEEKER PORTAL</span>
+                    <h1>My Applications</h1>
+                    <p>
+                        Track your applications and stay updated
+                        on your career opportunities.
+                    </p>
+                </div>
+
+                <a href="{{ url_for('jobs') }}"
+                   class="btn btn-primary">
+                    Browse Jobs →
+                </a>
+            </section>
+
+            <!-- Flash Messages -->
+            <div class="flash-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Application List -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+                    <h2 class="section-title">Your Applications</h2>
+                    <p class="section-description">
+                        Review job details, check application statuses,
+                        and manage eligible applications.
+                    </p>
+                </div>
+
+                {% if applications %}
+
+                    <div class="my-applications-list">
+
+                        {% for application in applications %}
+
+                            {% set status = application[5] %}
+
+                            <article class="my-application-card">
+
+                                <!-- Job Header -->
+                                <div class="my-application-header">
+
+                                    <div class="company-avatar">
+                                        {{ (application[3] or 'C')[0]|upper }}
+                                    </div>
+
+                                    <div class="my-application-title">
+                                        <h3>{{ application[2] }}</h3>
+                                        <p class="job-company">
+                                            {{ application[3] or 'Company not specified' }}
+                                        </p>
+                                    </div>
+
+                                    <span class="status
+                                        {% if status == 'Pending' %}
+                                            status-pending
+                                        {% elif status == 'Reviewed' %}
+                                            status-reviewed
+                                        {% elif status == 'Shortlisted' %}
+                                            status-shortlisted
+                                        {% elif status == 'Accepted' %}
+                                            status-accepted
+                                        {% elif status == 'Rejected' %}
+                                            status-rejected
+                                        {% elif status == 'Withdrawn' %}
+                                            status-withdrawn
+                                        {% endif %}">
+                                        {{ status }}
+                                    </span>
+
+                                </div>
+
+                                <div class="divider"></div>
+
+                                <!-- Application Details -->
+                                <div class="my-application-details">
+
+                                    <div class="application-detail-item">
+                                        <span class="information-label">
+                                            Location
+                                        </span>
+                                        <strong>
+                                            {{ application[4] or 'Not specified' }}
+                                        </strong>
+                                    </div>
+
+                                    <div class="application-detail-item">
+                                        <span class="information-label">
+                                            Application ID
+                                        </span>
+                                        <strong>#{{ application[1] }}</strong>
+                                    </div>
+
+                                    <div class="application-detail-item">
+                                        <span class="information-label">
+                                            Applied On
+                                        </span>
+                                        <strong>
+                                            {% if application[6] %}
+                                                {{ application[6] }}
+                                            {% else %}
+                                                Not available
+                                            {% endif %}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                                <!-- Status Explanation -->
+                                <div class="application-status-note">
+                                    {% if status == 'Pending' %}
+                                        Your application is awaiting employer review.
+                                    {% elif status == 'Reviewed' %}
+                                        The employer has reviewed your application.
+                                    {% elif status == 'Shortlisted' %}
+                                        Congratulations! Your application has been shortlisted.
+                                    {% elif status == 'Accepted' %}
+                                        Your application has been accepted.
+                                    {% elif status == 'Rejected' %}
+                                        This application was not selected.
+                                    {% elif status == 'Withdrawn' %}
+                                        You have withdrawn this application.
+                                    {% endif %}
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="my-application-actions">
+
+                                    <a href="{{ url_for(
+                                        'job_details',
+                                        job_id=application[0]
+                                    ) }}"
+                                       class="btn btn-primary">
+                                        View Job Details →
+                                    </a>
+
+                                    {% if status in ['Pending', 'Reviewed'] %}
+
+                                        <form
+                                            action="{{ url_for(
+                                                'withdraw_application',
+                                                application_id=application[1]
+                                            ) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Are you sure you want to withdraw this application?');">
+
+                                            <button type="submit"
+                                                    class="btn btn-danger">
+                                                Withdraw Application
+                                            </button>
+                                        </form>
+
+                                    {% elif status == 'Withdrawn' %}
+
+                                        <span class="withdrawn-label">
+                                            Application Withdrawn
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+
+                        <h2>No Applications Yet</h2>
+
+                        <p>
+                            You haven't applied for any jobs yet.
+                            Explore available opportunities and take
+                            the next step in your career.
+                        </p>
+
+                        <a href="{{ url_for('jobs') }}"
+                           class="btn btn-primary mt-2">
+                            Explore Jobs →
+                        </a>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+
+            <a href="{{ url_for('home') }}" class="brand footer-brand">
+                Job<span class="brand-highlight">Connect</span>
+            </a>
+
+            <p>Connecting talent with opportunity.</p>
+
+            <p class="footer-copy">
+                &copy; 2026 JobConnect. All rights reserved.
+            </p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

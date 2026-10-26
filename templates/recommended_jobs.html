@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Jobs | JobConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+    <nav class="navbar container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <span class="brand-icon">J</span>
+            <span>Job<span class="brand-highlight">Connect</span></span>
+        </a>
+
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+            <a href="{{ url_for('jobs') }}" class="nav-link">Find Jobs</a>
+            <a href="{{ url_for('job_seeker_dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url_for('profile') }}" class="nav-link">My Profile</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline btn-small">Logout</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page-content">
+    <div class="container recommended-page">
+
+        <a href="{{ url_for('job_seeker_dashboard') }}" class="recommended-back-link">
+            &larr; Back to Dashboard
+        </a>
+
+        <section class="recommended-hero">
+            <div class="recommended-hero-content">
+                <span class="recommended-eyebrow">PERSONALIZED FOR YOU</span>
+                <h1>Recommended Jobs</h1>
+                <p>
+                    Discover opportunities that align with your skills.
+                    Jobs with higher skill-match percentages appear first.
+                </p>
+            </div>
+            <div class="recommended-hero-icon" aria-hidden="true">&#128188;</div>
+        </section>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="recommended-flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert {% if category == 'success' %}alert-success{% else %}alert-error{% endif %}" role="status">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="recommended-skills-card">
+            <div class="recommended-section-heading">
+                <div class="recommended-section-icon" aria-hidden="true">&#10003;</div>
+                <div>
+                    <h2>Your Skills</h2>
+                    <p>Your profile skills help determine job matches.</p>
+                </div>
+                <a href="{{ url_for('profile') }}" class="recommended-edit-link">
+                    Edit Skills &rarr;
+                </a>
+            </div>
+
+            <div class="recommended-skills-list">
+                {% if user_skills %}
+                    {% for skill in user_skills %}
+                        <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                {% else %}
+                    <div class="recommended-no-skills">
+                        <p>You haven't added any skills to your profile yet.</p>
+                        <a href="{{ url_for('profile') }}" class="recommended-inline-link">
+                            Add your skills to your profile
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="recommended-results-section">
+            <div class="recommended-results-heading">
+                <div>
+                    <h2>Jobs picked for you</h2>
+                    <p>Review the matching skills and explore each opportunity.</p>
+                </div>
+                {% if recommendations %}
+                    <span class="recommended-results-count">
+                        {{ recommendations|length }} jobs
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if recommendations %}
+                <div class="recommended-job-list">
+                    {% for job in recommendations %}
+                        <article class="recommended-job-card">
+
+                            <div class="recommended-job-top">
+                                <div class="recommended-company-avatar" aria-hidden="true">
+                                    {{ (job.company or 'C')[0]|upper }}
+                                </div>
+
+                                <div class="recommended-job-title">
+                                    <h3>{{ job.title }}</h3>
+                                    <p>{{ job.company or 'Company not specified' }}</p>
+                                </div>
+
+                                <div class="recommended-match-badge">
+                                    <strong>{{ job.match_percentage }}%</strong>
+                                    <span>Skills match</span>
+                                </div>
+                            </div>
+
+                            <div class="recommended-job-meta">
+                                <span>
+                                    <span aria-hidden="true">&#128205;</span>
+                                    {{ job.location or 'Location not specified' }}
+                                </span>
+                                <span>
+                                    <span aria-hidden="true">&#128176;</span>
+                                    {% if job.salary is not none %}
+                                        {{ job.salary }}
+                                    {% else %}
+                                        Salary not specified
+                                    {% endif %}
+                                </span>
+                                <span>
+                                    <span aria-hidden="true">&#128197;</span>
+                                    {% if job.posted_at %}
+                                        {{ job.posted_at }}
+                                    {% else %}
+                                        Date not available
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div class="recommended-match-section">
+                                <div class="recommended-match-label-row">
+                                    <span>Skill compatibility</span>
+                                    <strong>{{ job.match_percentage }}%</strong>
+                                </div>
+                                
+                                <div class="recommended-match-track"
+                                     role="progressbar"
+                                     aria-label="Skills match percentage"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"
+                                     aria-valuenow="{{ job.match_percentage }}">
+                                    <div class="recommended-match-fill"
+                                         style="--match-width: {{ [[job.match_percentage|float, 0]|max, 100]|min }}%;">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="recommended-required-skills">
+                                <h4>Required Skills</h4>
+                                {% if job.required_skills %}
+                                    <p>{{ job.required_skills }}</p>
+                                {% else %}
+                                    <p class="recommended-muted">Not specified</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="recommended-matched-skills">
+                                <h4>Matching Skills</h4>
+                                {% if job.matched_skills %}
+                                    <div class="recommended-matched-tags">
+                                        {% for skill in job.matched_skills %}
+                                            <span class="recommended-match-tag">
+                                                <span aria-hidden="true">&#10003;</span>
+                                                {{ skill }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="recommended-muted">No matching skills found.</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="recommended-job-footer">
+                                <span class="recommended-footer-note">
+                                    Review the full job description for details.
+                                </span>
+                                <a href="{{ url_for('job_details', job_id=job.job_id) }}"
+                                   class="btn btn-primary">
+                                    View Job Details &rarr;
+                                </a>
+                            </div>
+
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="recommended-empty-state">
+                    <div class="recommended-empty-icon" aria-hidden="true">&#128188;</div>
+                    <h2>No job recommendations yet</h2>
+                    <p>
+                        There are currently no job listings to recommend.
+                        You can browse all available jobs or check again later.
+                    </p>
+                    <a href="{{ url_for('jobs') }}" class="btn btn-primary">
+                        Browse All Jobs
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-content">
+        <div class="footer-brand">
+            <span class="brand-icon">J</span>
+            <span>Job<span class="brand-highlight">Connect</span></span>
+        </div>
+        <p class="footer-copy">Connecting talent with opportunity.</p>
+    </div>
+</footer>
+
+</body>
+</html>
