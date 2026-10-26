@@ -77,7 +77,6 @@ JobConnect/
     └── change_password.html
 ```
 
-*Note: The structure above highlights the main project files. Your repository may contain additional files and folders.*
 
 ## Prerequisites
 
